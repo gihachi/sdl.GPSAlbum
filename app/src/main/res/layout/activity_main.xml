@@ -6,15 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/photo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/street_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <GridView android:id="@+id/grid_view"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:numColumns="2"
+    android:verticalSpacing="5dp"
+    android:horizontalSpacing="5dp"
+    app:layout_constraintBottom_toTopOf="@+id/street_button"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/street_button"

@@ -13,16 +13,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
+import jp.ac.titech.itpro.sdl.sdlcameraalbum.adapter.PhotoGridAdapter;
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.db.PhotoDatabase;
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.util.FileUtil;
@@ -31,37 +31,28 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
     private ArrayAdapter<String> adapter;
     private final static int REQ_PHOTO = 1234;
+    private File externalPath;
+    private List<PhotoData> photoDataList;
+    private PhotoGridAdapter photoGridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        makePhotoDirIfNotExsist();
+        externalPath = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        initialisePhotoList();
 
         setContentView(R.layout.activity_main);
-        ListView photoList = findViewById(R.id.photo);
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>());
-        photoList.setAdapter(adapter);
-        showPhotoList();
+
+        photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDataList, externalPath);
+        GridView gridView = findViewById(R.id.grid_view);
+        gridView.setAdapter(photoGridAdapter);
     }
 
-    public void showPhotoList(){
-        adapter.clear();
+    public void initialisePhotoList(){
+        // TODO 別スレッドで動かす
         PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").allowMainThreadQueries().build();
-        List<String> photoList = new ArrayList<>();
-        for (PhotoData photoData : photoDB.photoDao().loadAllPhotoData()) {
-            Log.d(TAG, "iterate photos");
-            photoList.add(photoData._id+","+photoData.date+","+photoData.latitude+","+photoData.longitude);
-            Log.d(TAG, photoData._id+","+photoData.date+","+photoData.latitude+","+photoData.longitude);
-        }
-
-        if(!photoList.isEmpty()){
-            Log.d(TAG, "notify");
-            adapter.addAll(photoList);
-            adapter.notifyDataSetChanged();
-        }
+        photoDataList = photoDB.photoDao().loadAllPhotoData();
     }
 
     public void takePhoto(View view){
@@ -83,25 +74,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void makePhotoDirIfNotExsist(){
-//        File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),"GeoAlbum");
-//        if (! storageDir.exists()){
-//            if (! storageDir.mkdirs()){
-//                Log.d("MyCameraApp", "failed to create directory");
-//                throw new Error("dir cannot make");
-//            }
-//        }
-//    }
-
     private File getTempFilePath(){
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES); //new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),"GeoAlbum");
+        File storageDir = externalPath;
         File photoFilePath = new File(storageDir, getString(R.string.temp_photo_file_name));
         return photoFilePath;
     }
 
-    private String makePhotoFileName(String takenDate){
-        return getString(R.string.photo_file_nane_prefix)+takenDate+".jpg";
-    }
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data){
@@ -120,19 +98,21 @@ public class MainActivity extends AppCompatActivity {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSZ");
         String takenDate = sdf.format(date);
-        String fileName = makePhotoFileName(takenDate);
+        String fileName = FileUtil.makePhotoFileName(takenDate);
 
         double latitude = 0.5;
         double longitude = 0.3;
         String description = "";
 
-        FileUtil.renameFile(getTempFilePath(), new File(fileName));
+        FileUtil.renameFile(getTempFilePath(), new File(externalPath, fileName));
         PhotoData photoData = new PhotoData(takenDate, description, latitude, longitude);
 
         PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").allowMainThreadQueries().build();
         photoDB.photoDao().insertPhoto(photoData);
 
-        showPhotoList();
+        Log.d(TAG, "taken photo : "+fileName);
+        photoDataList.add(photoData);
+        photoGridAdapter.notifyDataSetChanged();
     }
 
 

@@ -4,4 +4,5 @@
     <string name="toast_no_camera">No activities for taking photoes</string>
     <string name="temp_photo_file_name">GEO_ALBUM_TEMP.jpg</string>
     <string name="photo_file_nane_prefix">geo-album-</string>
+    <string name="description">picture</string>
 </resources>
