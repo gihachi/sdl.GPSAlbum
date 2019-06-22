@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -35,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
     private List<PhotoData> photoDataList;
     private PhotoGridAdapter photoGridAdapter;
 
+    public static final String EXTRA_DESCRIPTION = "PHOTO_DESCRIPTION";
+    public static final String EXTRA_DATE = "PHOTO_DATE";
+    public static final String EXTRA_LATITUDE = "PHOTO_LATITUDE";
+    public static final String EXTRA_LONGITUDE = "PHOTO_LONGITUDE";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,20 @@ public class MainActivity extends AppCompatActivity {
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDataList, externalPath);
         GridView gridView = findViewById(R.id.grid_view);
         gridView.setAdapter(photoGridAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                PhotoData clickedPhoto = photoDataList.get(position);
+                Intent intent = new Intent(getApplication(), PhotoActivity.class);
+                intent.putExtra(EXTRA_DATE, clickedPhoto.date);
+                intent.putExtra(EXTRA_DESCRIPTION, clickedPhoto.description);
+                intent.putExtra(EXTRA_LATITUDE, clickedPhoto.latitude);
+                intent.putExtra(EXTRA_LONGITUDE, clickedPhoto.longitude);
+                startActivity(intent);
+            }
+        });
     }
 
     public void initialisePhotoList(){

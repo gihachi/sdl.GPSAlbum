@@ -5,4 +5,8 @@
     <string name="temp_photo_file_name">GEO_ALBUM_TEMP.jpg</string>
     <string name="photo_file_nane_prefix">geo-album-</string>
     <string name="description">picture</string>
+    <string name="arial_view">display arial map</string>
+    <string name="panorama">display panorama</string>
+    <string name="view_photo">photo view</string>
+    <string name="photo_description">photo description</string>
 </resources>
