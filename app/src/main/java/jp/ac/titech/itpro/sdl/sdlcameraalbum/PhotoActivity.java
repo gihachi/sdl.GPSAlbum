@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.util.FileUtil;
@@ -56,7 +54,7 @@ public class PhotoActivity extends AppCompatActivity {
 
     public void displayArialMap(View view){
 
-        Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=map&center="+latitude+","+longitude+"&basemap=satellite");
+        Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=map&center="+latitude+","+longitude+"&zoom=50&basemap=satellite");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }

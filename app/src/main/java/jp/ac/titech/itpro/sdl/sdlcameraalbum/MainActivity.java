@@ -1,12 +1,16 @@
 package jp.ac.titech.itpro.sdl.sdlcameraalbum;
 
 
+import android.Manifest;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -29,6 +37,13 @@ import jp.ac.titech.itpro.sdl.sdlcameraalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.util.FileUtil;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final static String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private final static int REQ_PERMISSIONS = 1111;
+
     private final static String TAG = MainActivity.class.getSimpleName();
     private ArrayAdapter<String> adapter;
     private final static int REQ_PHOTO = 1234;
@@ -41,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_LATITUDE = "PHOTO_LATITUDE";
     public static final String EXTRA_LONGITUDE = "PHOTO_LONGITUDE";
 
+    private FusedLocationProviderClient locationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
         initialisePhotoList();
 
         setContentView(R.layout.activity_main);
+
+        // gpsの許可
+        ActivityCompat.requestPermissions(this, PERMISSIONS, REQ_PERMISSIONS);
+        locationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        FusedLocationProviderClient client = new FusedLocationProviderClient(this);
 
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDataList, externalPath);
         GridView gridView = findViewById(R.id.grid_view);
@@ -108,21 +130,39 @@ public class MainActivity extends AppCompatActivity {
         switch (reqCode){
             case REQ_PHOTO:
                 if(resCode == RESULT_OK){
-                    addPhotoDataToDataBase();
+                    getLocationAndAddPhotoDataToDataBase();
                 }
                 break;
         }
     }
 
-    private void addPhotoDataToDataBase(){
+    private void getLocationAndAddPhotoDataToDataBase(){
+
+        if(checkPermission()){
+            locationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(location == null){
+                        Log.d(TAG,"location null");
+                        addPhoto(0.0,0.0);
+                    }else{
+                        addPhoto(location.getLatitude(),location.getLongitude());
+                        Log.d(TAG, "location:"+location.getLatitude()+","+location.getLongitude());
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    private void addPhoto(double latitude, double longitude){
 
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSZ");
         String takenDate = sdf.format(date);
         String fileName = FileUtil.makePhotoFileName(takenDate);
 
-        double latitude = 0.5;
-        double longitude = 0.3;
         String description = "";
 
         FileUtil.renameFile(getTempFilePath(), new File(externalPath, fileName));
@@ -134,6 +174,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "taken photo : "+fileName);
         photoDataList.add(photoData);
         photoGridAdapter.notifyDataSetChanged();
+    }
+
+    private boolean checkPermission(){
+        for (String permission : PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED){
+                return false;
+            }
+        }
+        return true;
     }
 
 
