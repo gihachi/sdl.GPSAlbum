@@ -13,11 +13,17 @@ public class PhotoData {
     public String description;
     public double latitude;
     public double longitude;
+    @ColumnInfo(name = "group_id")
+    public int groupID;
+    @ColumnInfo(name = "is_outside")
+    public boolean isOutSide;
 
-    public PhotoData(String date, String description, double latitude, double longitude){
+    public PhotoData(String date, String description, double latitude, double longitude, int groupID, boolean isOutSide){
         this.date = date;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.groupID = groupID;
+        this.isOutSide = isOutSide;
     }
 }

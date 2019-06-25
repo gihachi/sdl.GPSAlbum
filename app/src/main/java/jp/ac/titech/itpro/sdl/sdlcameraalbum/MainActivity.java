@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         String description = "";
 
         FileUtil.renameFile(getTempFilePath(), new File(externalPath, fileName));
-        PhotoData photoData = new PhotoData(takenDate, description, latitude, longitude);
+        PhotoData photoData = new PhotoData(takenDate, description, latitude, longitude, 0, false);
 
         PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").allowMainThreadQueries().build();
         photoDB.photoDao().insertPhoto(photoData);
