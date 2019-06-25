@@ -5,6 +5,7 @@ import android.Manifest;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
@@ -20,15 +21,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
+import android.location.Geocoder;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.adapter.PhotoGridAdapter;
@@ -146,8 +150,24 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG,"location null");
                         addPhoto(0.0,0.0);
                     }else{
-                        addPhoto(location.getLatitude(),location.getLongitude());
-                        Log.d(TAG, "location:"+location.getLatitude()+","+location.getLongitude());
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        addPhoto(latitude,longitude);
+                        Log.d(TAG, "location:"+latitude+","+longitude);
+                        Geocoder geocoder =  new Geocoder(getApplicationContext(), Locale.ENGLISH);
+                        try{
+                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            Address address = addresses.get(0);
+                            Log.d(TAG, "address:"+address.getAddressLine(0));
+                            Log.d(TAG, "address:"+address.getCountryName());
+                            Log.d(TAG, "address:"+address.getAdminArea());
+                            Log.d(TAG, "address:"+address.getLocality());
+                            Log.d(TAG, "address:"+address.getPostalCode());
+                        }catch (IOException e){
+
+                        }
+
+
                     }
                 }
             });

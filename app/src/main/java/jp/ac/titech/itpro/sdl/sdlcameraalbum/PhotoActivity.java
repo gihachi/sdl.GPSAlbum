@@ -19,7 +19,6 @@ import jp.ac.titech.itpro.sdl.sdlcameraalbum.util.FileUtil;
 public class PhotoActivity extends AppCompatActivity {
 
     private final static String TAG = PhotoActivity.class.getSimpleName();
-    private final static int REQ_PHOTO = 1234;
     private File externalPath;
     private String date;
     private String description;
@@ -63,7 +62,6 @@ public class PhotoActivity extends AppCompatActivity {
 
         Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint="+latitude+","+longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//        intent.setPackage("com.android.chrome");
         startActivity(intent);
     }
 }
