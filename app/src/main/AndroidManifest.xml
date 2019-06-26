@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jp.ac.titech.itpro.sdl.sdlcameraalbum">
+    package="jp.ac.titech.itpro.sdl.cameraalbum">
 
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
@@ -29,7 +29,7 @@
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="jp.ac.titech.itpro.sdl.sdlcameraalbum.fileprovider"
+            android:authorities="jp.ac.titech.itpro.sdl.cameraalbum.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

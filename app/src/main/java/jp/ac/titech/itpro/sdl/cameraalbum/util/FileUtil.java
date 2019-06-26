@@ -4,7 +4,7 @@ import android.os.Environment;
 
 import java.io.File;
 
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.R;
+import jp.ac.titech.itpro.sdl.cameraalbum.R;
 
 public class FileUtil {
 

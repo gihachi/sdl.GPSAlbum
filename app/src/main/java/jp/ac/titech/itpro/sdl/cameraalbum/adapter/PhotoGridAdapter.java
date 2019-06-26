@@ -13,27 +13,26 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
-import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.R;
+import jp.ac.titech.itpro.sdl.cameraalbum.R;
 
 public class PhotoGridAdapter extends BaseAdapter {
 
     private final static String TAG = PhotoGridAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<PhotoData> mPhotoDataList;
+    private List<String> mPhotoDateList;
     private LayoutInflater inflater;
     private File externalPhotoDir;
 
     @Override
     public int getCount(){
-        return mPhotoDataList.size();
+        return mPhotoDateList.size();
     }
 
     @Override
     public Object getItem(int i){
-        return mPhotoDataList.get(i);
+        return mPhotoDateList.get(i);
     }
 
     @Override
@@ -41,10 +40,10 @@ public class PhotoGridAdapter extends BaseAdapter {
         return position;
     }
 
-    public PhotoGridAdapter(Context context, List<PhotoData> photoDataList, File externalPhotoDir){
+    public PhotoGridAdapter(Context context, List<String> photoDateList, File externalPhotoDir){
         super();
         this.mContext = context;
-        this.mPhotoDataList = photoDataList;
+        this.mPhotoDateList = photoDateList;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.externalPhotoDir = externalPhotoDir;
     }
@@ -52,7 +51,7 @@ public class PhotoGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent){
 
         View returnView;
-        PhotoData photoData = mPhotoDataList.get(position);
+        String photoDate = mPhotoDateList.get(position);
         if(convertView == null){
             returnView = inflater.inflate(R.layout.grid_image_view,parent,false);
         }else{
@@ -62,7 +61,7 @@ public class PhotoGridAdapter extends BaseAdapter {
         ImageView imageView = returnView.findViewById(R.id.image_view);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        String photoFileName = FileUtil.makePhotoFileName(photoData.date);
+        String photoFileName = FileUtil.makePhotoFileName(photoDate);
         File photoFile = new File(externalPhotoDir, photoFileName);
 
         if(!photoFile.exists()){

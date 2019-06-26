@@ -44,7 +44,8 @@ import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Area;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Group;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.R;
+import jp.ac.titech.itpro.sdl.cameraalbum.util.PhotoDataUtil;
+import jp.ac.titech.itpro.sdl.cameraalbum.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQ_PHOTO = 1234;
     private File externalPath;
     private List<PhotoData> photoDataList;
+    private List<String> photoDateList;
     private PhotoGridAdapter photoGridAdapter;
 
     public static final float groupRange = 15000.0f;
@@ -82,7 +84,9 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, PERMISSIONS, REQ_PERMISSIONS);
         locationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDataList, externalPath);
+
+
+        photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDateList, externalPath);
         GridView gridView = findViewById(R.id.grid_view);
         gridView.setAdapter(photoGridAdapter);
 
@@ -106,13 +110,14 @@ public class MainActivity extends AppCompatActivity {
         // TODO 別スレッドで動かす
         PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").allowMainThreadQueries().build();
         photoDataList = photoDB.photoDao().loadAllPhotoData();
+        photoDateList = PhotoDataUtil.makePhotoDateList(photoDataList);
     }
 
     public void takePhoto(View view){
         File photoFilePath = getTempFilePath();
 
         Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
-                "jp.ac.titech.itpro.sdl.sdlcameraalbum.fileprovider",
+                "jp.ac.titech.itpro.sdl.cameraalbum.fileprovider",
                 photoFilePath);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -181,8 +186,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-
     }
 
     // Todo dbを閉じる
@@ -208,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d(TAG, "taken photo : "+fileName);
                 photoDataList.add(photoData);
+                photoDateList.add(photoData.date);
+
 
                 handler.post(new Runnable() {
                     @Override
