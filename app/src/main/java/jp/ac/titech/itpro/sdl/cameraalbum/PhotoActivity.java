@@ -1,11 +1,10 @@
-package jp.ac.titech.itpro.sdl.sdlcameraalbum;
+package jp.ac.titech.itpro.sdl.cameraalbum;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +13,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.util.FileUtil;
+import jp.ac.titech.itpro.sdl.sdlcameraalbum.R;
+import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
 
 public class PhotoActivity extends AppCompatActivity {
 
@@ -47,8 +47,6 @@ public class PhotoActivity extends AppCompatActivity {
     private void showDisplay(){
         ImageView imageView = findViewById(R.id.photo_view);
         Picasso.with(getApplicationContext()).load(photoFile).into(imageView);
-        TextView textView = findViewById(R.id.photo_description);
-        textView.setText(date+","+description);
     }
 
     public void displayArialMap(View view){

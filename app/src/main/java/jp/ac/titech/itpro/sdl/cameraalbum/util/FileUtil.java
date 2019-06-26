@@ -1,4 +1,4 @@
-package jp.ac.titech.itpro.sdl.sdlcameraalbum.util;
+package jp.ac.titech.itpro.sdl.cameraalbum.util;
 
 import android.os.Environment;
 

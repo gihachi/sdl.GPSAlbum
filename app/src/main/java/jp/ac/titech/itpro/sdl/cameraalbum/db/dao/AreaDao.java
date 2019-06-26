@@ -1,4 +1,4 @@
-package jp.ac.titech.itpro.sdl.sdlcameraalbum.db.dao;
+package jp.ac.titech.itpro.sdl.cameraalbum.db.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -6,7 +6,7 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.db.entity.Area;
+import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Area;
 
 @Dao
 public interface AreaDao {
@@ -16,5 +16,5 @@ public interface AreaDao {
 
     // stringも=でok?
     @Query("SELECT * FROM areas WHERE area_name = :areaName")
-    public List<Area> loadAreaFromID(String areaName);
+    public List<Area> loadAreaFromName(String areaName);
 }

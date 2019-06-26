@@ -1,4 +1,4 @@
-package jp.ac.titech.itpro.sdl.sdlcameraalbum.db.entity;
+package jp.ac.titech.itpro.sdl.cameraalbum.db.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
@@ -7,12 +7,11 @@ import android.support.annotation.NonNull;
 
 @Entity(tableName = "areas")
 public class Area {
-    @PrimaryKey(autoGenerate = true) public int _id;
+    @PrimaryKey(autoGenerate = true) public long _id;
 
     @ColumnInfo(name = "area_name")
-    @PrimaryKey
     @NonNull
-    String areaName;
+    public String areaName;
 
     public Area(String areaName){
         this.areaName = areaName;

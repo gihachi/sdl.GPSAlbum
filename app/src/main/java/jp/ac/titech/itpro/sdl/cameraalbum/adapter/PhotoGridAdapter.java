@@ -1,4 +1,4 @@
-package jp.ac.titech.itpro.sdl.sdlcameraalbum.adapter;
+package jp.ac.titech.itpro.sdl.cameraalbum.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,9 +13,9 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
+import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.PhotoData;
+import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
 import jp.ac.titech.itpro.sdl.sdlcameraalbum.R;
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.db.entity.PhotoData;
-import jp.ac.titech.itpro.sdl.sdlcameraalbum.util.FileUtil;
 
 public class PhotoGridAdapter extends BaseAdapter {
 
