@@ -7,7 +7,6 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +20,6 @@ public class PhotoActivity extends AppCompatActivity {
     private final static String TAG = PhotoActivity.class.getSimpleName();
     private File externalPath;
     private String date;
-    private String description;
     private double latitude;
     private double longitude;
     private File photoFile;
@@ -34,7 +32,6 @@ public class PhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo);
 
         Intent intent = getIntent();
-        description = intent.getStringExtra(MainActivity.EXTRA_DESCRIPTION);
         date = intent.getStringExtra(MainActivity.EXTRA_DATE);
         latitude = intent.getDoubleExtra(MainActivity.EXTRA_LATITUDE, 0.0);
         longitude = intent.getDoubleExtra(MainActivity.EXTRA_LONGITUDE,0.0);

@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 import android.location.Geocoder;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQ_PERMISSIONS = 1111;
 
     private final static String TAG = MainActivity.class.getSimpleName();
-    private ArrayAdapter<String> adapter;
     private final static int REQ_PHOTO = 1234;
     private File externalPath;
     private List<PhotoData> photoDataList;
@@ -83,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         // gpsの許可
         ActivityCompat.requestPermissions(this, PERMISSIONS, REQ_PERMISSIONS);
         locationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        FusedLocationProviderClient client = new FusedLocationProviderClient(this);
 
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDataList, externalPath);
         GridView gridView = findViewById(R.id.grid_view);
@@ -133,8 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private File getTempFilePath(){
         File storageDir = externalPath;
-        File photoFilePath = new File(storageDir, getString(R.string.temp_photo_file_name));
-        return photoFilePath;
+        return new File(storageDir, getString(R.string.temp_photo_file_name));
     }
 
 
@@ -243,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             long closestGroupID = -1;
 
             // 半径の3倍以内に中心があるグループ
-            List<Group> within3TimesRangeGroup = new ArrayList<Group>();
+            List<Group> within3TimesRangeGroup = new ArrayList<>();
 
             float[] locationResult = new float[3];
 
