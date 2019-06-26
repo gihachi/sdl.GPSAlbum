@@ -19,15 +19,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.AllPhotoAlbumActivity">
+        </activity>
+        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.PhotoActivity">
+        </activity>
+        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupThumbnailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.PhotoActivity">
-        </activity>
-        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupThumbnailActivity">
         </activity>
         <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupAlbumActivity">
         </activity>

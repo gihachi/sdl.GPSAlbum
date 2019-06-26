@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class GroupThumbnailActivity extends MainGridActivity {
 
         GridView gridView = findViewById(R.id.grid_view);
         gridView.setAdapter(groupThumbnailAdapter);
+
+        Button button = findViewById(R.id.jump_another_activity_button);
+        button.setText("Go to All Photo Page");
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
