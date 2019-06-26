@@ -1,13 +1,14 @@
 package jp.ac.titech.itpro.sdl.cameraalbum;
 
-
 import android.Manifest;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -15,13 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
-import android.location.Geocoder;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -35,8 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-
-import jp.ac.titech.itpro.sdl.cameraalbum.adapter.PhotoGridAdapter;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.AreaDatabase;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.GroupDatabase;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.PhotoDatabase;
@@ -44,79 +39,51 @@ import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Area;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Group;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
-import jp.ac.titech.itpro.sdl.cameraalbum.util.PhotoDataUtil;
-import jp.ac.titech.itpro.sdl.cameraalbum.R;
 
-public class MainActivity extends AppCompatActivity {
+public abstract class MainGridActivity extends AppCompatActivity {
 
-    private final static String[] PERMISSIONS = {
+    protected final static String[] PERMISSIONS = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-    private final static int REQ_PERMISSIONS = 1111;
+    protected final static int REQ_PERMISSIONS = 1111;
 
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = AllPhotoAlbumActivity.class.getSimpleName();
     private final static int REQ_PHOTO = 1234;
-    private File externalPath;
-    private List<PhotoData> photoDataList;
-    private List<String> photoDateList;
-    private PhotoGridAdapter photoGridAdapter;
+    protected File externalPath;
 
-    public static final float groupRange = 15000.0f;
+    protected static final float groupRange = 15000.0f;
 
-    public static final String EXTRA_DESCRIPTION = "PHOTO_DESCRIPTION";
-    public static final String EXTRA_DATE = "PHOTO_DATE";
-    public static final String EXTRA_LATITUDE = "PHOTO_LATITUDE";
-    public static final String EXTRA_LONGITUDE = "PHOTO_LONGITUDE";
+    protected FusedLocationProviderClient locationClient;
 
-    private FusedLocationProviderClient locationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         externalPath = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        initialisePhotoList();
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_photo_grid);
 
         // gpsの許可
         ActivityCompat.requestPermissions(this, PERMISSIONS, REQ_PERMISSIONS);
         locationClient = LocationServices.getFusedLocationProviderClient(this);
 
-
-
-        photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDateList, externalPath);
-        GridView gridView = findViewById(R.id.grid_view);
-        gridView.setAdapter(photoGridAdapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                PhotoData clickedPhoto = photoDataList.get(position);
-                Intent intent = new Intent(getApplication(), PhotoActivity.class);
-                intent.putExtra(EXTRA_DATE, clickedPhoto.date);
-                intent.putExtra(EXTRA_LATITUDE, clickedPhoto.latitude);
-                intent.putExtra(EXTRA_LONGITUDE, clickedPhoto.longitude);
-
-                Log.d(TAG, "clicked photo data"+clickedPhoto.date+","+clickedPhoto.latitude+","+clickedPhoto.longitude+","+clickedPhoto.groupID+","+clickedPhoto.isOutSide);
-                startActivity(intent);
-            }
-        });
+        doAdditionalInitialization();
     }
 
-    public void initialisePhotoList(){
-        // TODO 別スレッドで動かす
-        PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").allowMainThreadQueries().build();
-        photoDataList = photoDB.photoDao().loadAllPhotoData();
-        photoDateList = PhotoDataUtil.makePhotoDateList(photoDataList);
+    protected abstract void doAdditionalInitialization();
+
+    public void jampAnotherActivity(View view) {
+        goToAnotherActivity();
     }
+
+    protected abstract void goToAnotherActivity();
 
     public void takePhoto(View view){
         File photoFilePath = getTempFilePath();
 
-        Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+        Uri photoURI = FileProvider.getUriForFile(MainGridActivity.this,
                 "jp.ac.titech.itpro.sdl.cameraalbum.fileprovider",
                 photoFilePath);
 
@@ -128,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         if (!activities.isEmpty()) {
             startActivityForResult(intent, REQ_PHOTO);
         } else {
-            Toast.makeText(MainActivity.this, R.string.toast_no_camera, Toast.LENGTH_LONG).show();
+            Toast.makeText(MainGridActivity.this, R.string.toast_no_camera, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -136,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         File storageDir = externalPath;
         return new File(storageDir, getString(R.string.temp_photo_file_name));
     }
-
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data){
@@ -188,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected abstract void doAfterStorePhotoData(PhotoData photoData);
+    protected abstract void notifyStorePhotoDataToUIThread();
+
     // Todo dbを閉じる
     private void addPhoto(double latitude, double longitude, String areaName){
 
@@ -209,15 +178,12 @@ public class MainActivity extends AppCompatActivity {
                 PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").build();
                 photoDB.photoDao().insertPhoto(photoData);
 
-                Log.d(TAG, "taken photo : "+fileName);
-                photoDataList.add(photoData);
-                photoDateList.add(photoData.date);
-
+                doAfterStorePhotoData(photoData);
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        photoGridAdapter.notifyDataSetChanged();
+                        notifyStorePhotoDataToUIThread();
                     }
                 });
 
@@ -331,6 +297,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
 }

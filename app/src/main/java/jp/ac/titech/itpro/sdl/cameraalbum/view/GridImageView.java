@@ -1,4 +1,4 @@
-package jp.ac.titech.itpro.sdl.cameraalbum.jp.ac.titech.itpro.sdl.cameraalbum.view;
+package jp.ac.titech.itpro.sdl.cameraalbum.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

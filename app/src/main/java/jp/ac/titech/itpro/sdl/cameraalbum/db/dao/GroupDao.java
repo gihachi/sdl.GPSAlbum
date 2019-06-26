@@ -15,6 +15,9 @@ public interface GroupDao {
     @Insert
     public long insertGroup(Group groupData);
 
+    @Query("SELECT * FROM  groups")
+    public List<Group> loadAllGroup();
+
     @Query("SELECT * FROM groups WHERE area_id = :id")
     public List<Group> loadGroupsInSpecificArea(long id);
 }

@@ -33,7 +33,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         android:onClick="displayPanorama"
+        app:layout_constraintStart_toEndOf="@+id/arial_geo_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

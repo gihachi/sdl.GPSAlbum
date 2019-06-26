@@ -32,9 +32,9 @@ public class PhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo);
 
         Intent intent = getIntent();
-        date = intent.getStringExtra(MainActivity.EXTRA_DATE);
-        latitude = intent.getDoubleExtra(MainActivity.EXTRA_LATITUDE, 0.0);
-        longitude = intent.getDoubleExtra(MainActivity.EXTRA_LONGITUDE,0.0);
+        date = intent.getStringExtra(AllPhotoAlbumActivity.EXTRA_DATE);
+        latitude = intent.getDoubleExtra(AllPhotoAlbumActivity.EXTRA_LATITUDE, 0.0);
+        longitude = intent.getDoubleExtra(AllPhotoAlbumActivity.EXTRA_LONGITUDE,0.0);
 
         photoFile = new File(externalPath, FileUtil.makePhotoFileName(date));
 
