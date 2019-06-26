@@ -20,6 +20,8 @@ public class GroupThumbnailActivity extends MainGridActivity {
 
     private final static String TAG = GroupThumbnailActivity.class.getSimpleName();
 
+    public static final String EXTRA_GROUP_ID = "GROUP_ID";
+
     private List<Group> groupList;
     private GroupThumbnailAdapter groupThumbnailAdapter;
 
@@ -38,13 +40,10 @@ public class GroupThumbnailActivity extends MainGridActivity {
 
                 Group clickedGroup = groupList.get(position);
                 Log.d(TAG, "group id "+clickedGroup._id);
-//                Intent intent = new Intent(getApplication(), PhotoActivity.class);
-//                intent.putExtra(EXTRA_DATE, clickedPhoto.date);
-//                intent.putExtra(EXTRA_LATITUDE, clickedPhoto.latitude);
-//                intent.putExtra(EXTRA_LONGITUDE, clickedPhoto.longitude);
-//
-//                Log.d(TAG, "clicked photo data"+clickedPhoto.date+","+clickedPhoto.latitude+","+clickedPhoto.longitude+","+clickedPhoto.groupID+","+clickedPhoto.isOutSide);
-//                startActivity(intent);
+                Intent intent = new Intent(getApplication(), GroupAlbumActivity.class);
+                intent.putExtra(EXTRA_GROUP_ID, clickedGroup._id);
+
+                startActivity(intent);
             }
         });
 

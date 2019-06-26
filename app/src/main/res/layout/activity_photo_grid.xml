@@ -9,6 +9,7 @@
     <GridView android:id="@+id/grid_view"
     android:layout_width="0dp"
     android:layout_height="0dp"
+    android:layout_margin="8dp"
     android:numColumns="2"
     android:verticalSpacing="5dp"
     android:horizontalSpacing="5dp"

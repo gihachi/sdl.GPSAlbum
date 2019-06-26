@@ -30,4 +30,7 @@ public interface PhotoDao {
 
     @Query("SELECT * FROM photos WHERE group_id IN (:groupIDArr) AND is_outside = 1")
     public List<PhotoData> loadOutSidePhotoDataByGroupID(long[] groupIDArr);
+
+    @Query("SELECT * FROM photos WHERE group_id = :groupID")
+    public List<PhotoData> loadPhotoDataByGroupID(long groupID);
 }

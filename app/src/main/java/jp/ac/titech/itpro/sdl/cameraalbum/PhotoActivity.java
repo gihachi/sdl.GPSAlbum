@@ -12,7 +12,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import jp.ac.titech.itpro.sdl.cameraalbum.R;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
 
 public class PhotoActivity extends AppCompatActivity {
