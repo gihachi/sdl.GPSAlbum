@@ -27,8 +27,8 @@
         </activity>
         <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.PhotoActivity">
         </activity>
-        <!--<activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupThumbnailActivity">-->
-        <!--</activity>-->
+        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupThumbnailActivity">
+        </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="jp.ac.titech.itpro.sdl.cameraalbum.fileprovider"
