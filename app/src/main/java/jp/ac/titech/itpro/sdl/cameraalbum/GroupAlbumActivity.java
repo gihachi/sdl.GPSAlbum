@@ -85,6 +85,8 @@ public class GroupAlbumActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+
+                        Log.d(TAG, "photoLength : "+ photoDateList.size());
                         photoGridAdapter.notifyDataSetChanged();
                     }
                 });

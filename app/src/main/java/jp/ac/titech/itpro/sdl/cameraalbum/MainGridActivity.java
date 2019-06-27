@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
     private final static int REQ_PHOTO = 1234;
     protected File externalPath;
 
-    protected static final float groupRange = 15000.0f;
+    protected static final float groupRange = 1.0f;
 
     protected FusedLocationProviderClient locationClient;
 
@@ -139,10 +140,9 @@ public abstract class MainGridActivity extends AppCompatActivity {
 
                             String countryName = address.getCountryName();
                             String adminAreaName = address.getAdminArea();
-                            String localityName = address.getLocality();
 
-                            if(countryName != null && adminAreaName != null && localityName != null){
-                                String areaName = countryName+"+"+adminAreaName+"+"+localityName;
+                            if(countryName != null && adminAreaName != null ){
+                                String areaName = countryName+"+"+adminAreaName;
                                 addPhoto(latitude, longitude, areaName);
                             }
                         }catch (IOException e){
@@ -154,8 +154,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
         }
     }
 
-    protected abstract void doAfterStorePhotoData(PhotoData photoData);
-    protected abstract void notifyStorePhotoDataToUIThread();
+    protected abstract void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group);
 
     // Todo dbを閉じる
     private void addPhoto(double latitude, double longitude, String areaName){
@@ -173,17 +172,15 @@ public abstract class MainGridActivity extends AppCompatActivity {
 
                 FileUtil.renameFile(getTempFilePath(), new File(externalPath, fileName));
 
-                PhotoData photoData = makePhotoData(areaName, latitude, longitude, takenDate);
+                Pair<PhotoData, Group> newPhotoGroupPair = makePhotoData(areaName, latitude, longitude, takenDate);
 
                 PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").build();
-                photoDB.photoDao().insertPhoto(photoData);
-
-                doAfterStorePhotoData(photoData);
+                photoDB.photoDao().insertPhoto(newPhotoGroupPair.first);
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        notifyStorePhotoDataToUIThread();
+                        notifyStorePhotoDataToUIThread(newPhotoGroupPair.first, newPhotoGroupPair.second);
                     }
                 });
 
@@ -191,7 +188,15 @@ public abstract class MainGridActivity extends AppCompatActivity {
         }).start();
     }
 
-    private PhotoData makePhotoData(String areaName, double latitude, double longitude, String date){
+    /**
+     * 写真がどのエリアに入るか計算する
+     * @param areaName
+     * @param latitude
+     * @param longitude
+     * @param date
+     * @return PhotoDataとGroup(新しいGroupを作れば)のPair, グループが作られなかった場合, Pair.second は nullとなる
+     */
+    private Pair<PhotoData, Group> makePhotoData(String areaName, double latitude, double longitude, String date){
 
         GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
         PhotoDatabase photoDatabase = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").build();
@@ -224,7 +229,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
                 // 範囲内に入っていた場合
                 if(Float.compare(distanceFromCenter, groupRange) <= 0){
                     closestGroupID = group._id;
-                    return new PhotoData(date, latitude, longitude, closestGroupID, true);
+                    return Pair.create(new PhotoData(date, latitude, longitude, closestGroupID, true), null);
 
                 }else{
                     if(Float.compare(closestGroupDist, 0.0f) < 0 || Float.compare(distanceFromCenter, closestGroupDist) < 0){
@@ -244,6 +249,8 @@ public abstract class MainGridActivity extends AppCompatActivity {
 
                 Group newGroup = new Group(areaID, latitude, longitude, FileUtil.makePhotoFileName(date));
                 long newGroupID = groupDB.groupDao().insertGroup(newGroup);
+
+                newGroup._id = newGroupID;
 
                 // group範囲外の要素の調査
                 if(within3TimesRangeGroup.size() > 0){
@@ -272,10 +279,10 @@ public abstract class MainGridActivity extends AppCompatActivity {
                         photoDatabase.photoDao().updateUsers(upDataPhotoList);
                     }
                 }
-                return new PhotoData(date, latitude, longitude, newGroupID, true);
+                return Pair.create(new PhotoData(date, latitude, longitude, newGroupID, true), newGroup);
             }else{ // 一番近いグループが半径の2倍以内の時
 
-                return new PhotoData(date, latitude, longitude, closestGroupID, false);
+                return Pair.create(new PhotoData(date, latitude, longitude, closestGroupID, false), null);
             }
         }else{ // areaが存在しない場合
 
@@ -285,7 +292,9 @@ public abstract class MainGridActivity extends AppCompatActivity {
             Group newGroup = new Group(newAreaID, latitude, longitude, FileUtil.makePhotoFileName(date));
             long newGroupID = groupDB.groupDao().insertGroup(newGroup);
 
-            return new PhotoData(date, latitude, longitude, newGroupID, true);
+            newGroup._id = newGroupID;
+
+            return Pair.create(new PhotoData(date, latitude, longitude, newGroupID, true), newGroup);
         }
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 
 import jp.ac.titech.itpro.sdl.cameraalbum.adapter.PhotoGridAdapter;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.PhotoDatabase;
+import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Group;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.PhotoDataUtil;
 
@@ -88,12 +89,9 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
     }
 
     @Override
-    protected void doAfterStorePhotoData(PhotoData photoData){
+    protected void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group){
         photoDataList.add(photoData);
         photoDateList.add(photoData.date);
-    }
-    @Override
-    protected void notifyStorePhotoDataToUIThread(){
         photoGridAdapter.notifyDataSetChanged();
     }
 }

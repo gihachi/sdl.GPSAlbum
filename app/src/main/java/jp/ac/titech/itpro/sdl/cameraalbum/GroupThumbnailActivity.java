@@ -81,13 +81,14 @@ public class GroupThumbnailActivity extends MainGridActivity {
     }
 
     @Override
-    protected void doAfterStorePhotoData(PhotoData photoData){
+    protected void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group){
 
-    }
+        if(group == null){
+            return;
+        }
 
-    @Override
-    protected void notifyStorePhotoDataToUIThread(){
-
+        groupList.add(group);
+        groupThumbnailAdapter.notifyDataSetChanged();
     }
 
 }
