@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,9 @@ public class PhotoActivity extends AppCompatActivity {
     private double latitude;
     private double longitude;
     private File photoFile;
+    private int listIndex;
+
+    public static final String EXTRA_DELETE_INDEX = "DELETE_INDEX";
 
     @Override
     protected void onCreate(Bundle saveInstanceState){
@@ -34,6 +38,8 @@ public class PhotoActivity extends AppCompatActivity {
         date = intent.getStringExtra(AllPhotoAlbumActivity.EXTRA_DATE);
         latitude = intent.getDoubleExtra(AllPhotoAlbumActivity.EXTRA_LATITUDE, 0.0);
         longitude = intent.getDoubleExtra(AllPhotoAlbumActivity.EXTRA_LONGITUDE,0.0);
+
+        listIndex = intent.getIntExtra(AllPhotoAlbumActivity.EXTRA_LIST_INDEX, 0);
 
         photoFile = new File(externalPath, FileUtil.makePhotoFileName(date));
 
@@ -50,6 +56,14 @@ public class PhotoActivity extends AppCompatActivity {
         Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=map&center="+latitude+","+longitude+"&zoom=50&basemap=satellite");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
+    }
+
+    public void deletePhoto(View view){
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DELETE_INDEX, listIndex);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     public void displayPanorama(View view){

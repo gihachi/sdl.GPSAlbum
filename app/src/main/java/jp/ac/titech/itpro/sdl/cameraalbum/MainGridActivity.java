@@ -77,6 +77,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
 
     public void jampAnotherActivity(View view) {
         goToAnotherActivity();
+        finish();
     }
 
     protected abstract void goToAnotherActivity();
@@ -114,8 +115,13 @@ public abstract class MainGridActivity extends AppCompatActivity {
                     getLocationAndAddPhotoDataToDataBase();
                 }
                 break;
+            default:
+                otherActionForActivityResult(reqCode, resCode, data);
+                break;
         }
     }
+
+    abstract protected void otherActionForActivityResult(int reqCode, int resCode, Intent data);
 
     private void getLocationAndAddPhotoDataToDataBase(){
 
@@ -196,7 +202,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
      * @param date
      * @return PhotoDataとGroup(新しいGroupを作れば)のPair, グループが作られなかった場合, Pair.second は nullとなる
      */
-    private Pair<PhotoData, Group> makePhotoData(String areaName, double latitude, double longitude, String date){
+    public Pair<PhotoData, Group> makePhotoData(String areaName, double latitude, double longitude, String date){
 
         GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
         PhotoDatabase photoDatabase = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").build();
@@ -276,7 +282,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
                     }
 
                     if(upDataPhotoList.size() > 0){
-                        photoDatabase.photoDao().updateUsers(upDataPhotoList);
+                        photoDatabase.photoDao().updatePhotos(upDataPhotoList);
                     }
                 }
                 return Pair.create(new PhotoData(date, latitude, longitude, newGroupID, true), newGroup);

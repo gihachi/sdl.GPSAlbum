@@ -9,13 +9,16 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.ac.titech.itpro.sdl.cameraalbum.adapter.PhotoGridAdapter;
+import jp.ac.titech.itpro.sdl.cameraalbum.db.GroupDatabase;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.PhotoDatabase;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.Group;
 import jp.ac.titech.itpro.sdl.cameraalbum.db.entity.PhotoData;
+import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.PhotoDataUtil;
 
 public class AllPhotoAlbumActivity extends MainGridActivity {
@@ -26,9 +29,13 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
     private List<String> photoDateList;
     private PhotoGridAdapter photoGridAdapter;
 
+    private final static int REQ_PHOTO_VIEW = 9999;
+    private final static int REQ_PHOTO = 9999;
+
     public static final String EXTRA_DATE = "PHOTO_DATE";
     public static final String EXTRA_LATITUDE = "PHOTO_LATITUDE";
     public static final String EXTRA_LONGITUDE = "PHOTO_LONGITUDE";
+    public static final String EXTRA_LIST_INDEX = "LIST_INDEX";
 
     @Override
     protected void doAdditionalInitialization(){
@@ -52,9 +59,10 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
                 intent.putExtra(EXTRA_DATE, clickedPhoto.date);
                 intent.putExtra(EXTRA_LATITUDE, clickedPhoto.latitude);
                 intent.putExtra(EXTRA_LONGITUDE, clickedPhoto.longitude);
+                intent.putExtra(EXTRA_LIST_INDEX, position);
 
                 Log.d(TAG, "clicked photo data"+clickedPhoto.date+","+clickedPhoto.latitude+","+clickedPhoto.longitude+","+clickedPhoto.groupID+","+clickedPhoto.isOutSide);
-                startActivity(intent);
+                startActivityForResult(intent, REQ_PHOTO_VIEW);
             }
         });
 
@@ -92,6 +100,49 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
     protected void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group){
         photoDataList.add(photoData);
         photoDateList.add(photoData.date);
+        photoGridAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void otherActionForActivityResult(int reqCode, int resCode, Intent data){
+        switch (reqCode){
+            case REQ_PHOTO_VIEW:
+                if (resCode == RESULT_OK){
+                    deletePhoto(data);
+                }
+                break;
+        }
+    }
+
+    void deletePhoto(Intent intent){
+        int listIndex = intent.getIntExtra(PhotoActivity.EXTRA_DELETE_INDEX, -1);
+        if(listIndex < 0){
+            return;
+        }
+        PhotoData deletePhotoData = photoDataList.get(listIndex);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {// ファイル情報の消去
+                File photoFile = new File(externalPath, FileUtil.makePhotoFileName(deletePhotoData.date));
+                photoFile.delete();
+
+                PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").build();
+                photoDB.photoDao().deletePhoto(deletePhotoData);
+
+                List<PhotoData> sameGroupPhotos = photoDB.photoDao().loadPhotoDataByGroupID(deletePhotoData.groupID);
+                if(sameGroupPhotos.size() == 0){
+                    GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
+                    List<Group> groupList = groupDB.groupDao().loadAllGroup();
+                    groupDB.groupDao().deleteGroup(groupList.get(0));
+                    groupDB.close();
+                }
+                photoDB.close();
+            }
+        }).start();
+
+
+        photoDataList.remove(listIndex);
+        photoDateList.remove(listIndex);
         photoGridAdapter.notifyDataSetChanged();
     }
 }

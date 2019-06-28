@@ -17,13 +17,13 @@ public interface PhotoDao {
     public long insertPhoto(PhotoData photoData);
 
     @Update
-    public void updateUser(PhotoData photoData);
+    public void updatePhoto(PhotoData photoData);
 
     @Update
-    public void updateUsers(List<PhotoData> photoDataList);
+    public void updatePhotos(List<PhotoData> photoDataList);
 
     @Delete
-    public void deleteUser(PhotoData phodoData);
+    public void deletePhoto(PhotoData phodoData);
 
     @Query("SELECT * FROM photos")
     public List<PhotoData> loadAllPhotoData();

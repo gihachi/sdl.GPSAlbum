@@ -9,4 +9,5 @@
     <string name="panorama">display panorama</string>
     <string name="view_photo">photo view</string>
     <string name="photo_description">photo description</string>
+    <string name="remove_photo">remove photo</string>
 </resources>

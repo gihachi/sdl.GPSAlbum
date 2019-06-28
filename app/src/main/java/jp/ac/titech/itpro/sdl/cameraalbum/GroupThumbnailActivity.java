@@ -22,6 +22,10 @@ public class GroupThumbnailActivity extends MainGridActivity {
     private final static String TAG = GroupThumbnailActivity.class.getSimpleName();
 
     public static final String EXTRA_GROUP_ID = "GROUP_ID";
+    public static final String EXTRA_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
+
+    private static final int REQ_GROUP_ALBUM = 10000;
+
 
     private List<Group> groupList;
     private GroupThumbnailAdapter groupThumbnailAdapter;
@@ -46,8 +50,9 @@ public class GroupThumbnailActivity extends MainGridActivity {
                 Log.d(TAG, "group id "+clickedGroup._id);
                 Intent intent = new Intent(getApplication(), GroupAlbumActivity.class);
                 intent.putExtra(EXTRA_GROUP_ID, clickedGroup._id);
+                intent.putExtra(EXTRA_GROUP_LIST_ID, position);
 
-                startActivity(intent);
+                startActivityForResult(intent, REQ_GROUP_ALBUM);
             }
         });
 
@@ -89,6 +94,22 @@ public class GroupThumbnailActivity extends MainGridActivity {
 
         groupList.add(group);
         groupThumbnailAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void otherActionForActivityResult(int reqCode, int resCode, Intent data){
+
+        switch (reqCode){
+            case REQ_GROUP_ALBUM:
+                if(resCode == RESULT_OK){
+                    int listIndex = data.getIntExtra(GroupAlbumActivity.EXTRA_DELETE_GROUP_LIST_ID, -1);
+                    if(listIndex < 0){
+                        return;
+                    }
+                    groupList.remove(listIndex);
+                    groupThumbnailAdapter.notifyDataSetChanged();
+                }
+        }
     }
 
 }

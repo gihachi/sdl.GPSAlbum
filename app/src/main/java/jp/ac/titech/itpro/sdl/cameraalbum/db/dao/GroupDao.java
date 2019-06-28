@@ -2,6 +2,7 @@ package jp.ac.titech.itpro.sdl.cameraalbum.db.dao;
 
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -15,9 +16,15 @@ public interface GroupDao {
     @Insert
     public long insertGroup(Group groupData);
 
+    @Delete
+    public void deleteGroup(Group groupData);
+
     @Query("SELECT * FROM  groups")
     public List<Group> loadAllGroup();
 
-    @Query("SELECT * FROM groups WHERE area_id = :id")
-    public List<Group> loadGroupsInSpecificArea(long id);
+    @Query("SELECT * FROM groups WHERE area_id = :areaID")
+    public List<Group> loadGroupsInSpecificArea(long areaID);
+
+    @Query("SELECT * FROM groups WHERE _id = :groupID")
+    public List<Group> loadSpecificGroupFromID(long groupID);
 }
