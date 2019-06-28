@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="map_type">
+        <item>"Panorama"</item>
+        <item>"Arial Map"</item>
+    </array>
+</resources>

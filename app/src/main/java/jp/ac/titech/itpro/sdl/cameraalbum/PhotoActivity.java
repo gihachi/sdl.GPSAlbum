@@ -13,9 +13,10 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import jp.ac.titech.itpro.sdl.cameraalbum.dialog.MapDisplaytDialog;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
 
-public class PhotoActivity extends AppCompatActivity {
+public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialog.MapDialogListener {
 
     private final static String TAG = PhotoActivity.class.getSimpleName();
     private File externalPath;
@@ -46,12 +47,22 @@ public class PhotoActivity extends AppCompatActivity {
         showDisplay();
     }
 
+    @Override
+    public void onArialMapSelected(DialogFragment dialog){
+        displayArialMap();
+    }
+
+    @Override
+    public void onPanoramaSelected(DialogFragment dialog){
+        displayPanorama();
+    }
+
     private void showDisplay(){
         ImageView imageView = findViewById(R.id.photo_view);
         Picasso.with(getApplicationContext()).load(photoFile).into(imageView);
     }
 
-    public void displayArialMap(View view){
+    public void displayArialMap(){
 
         Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=map&center="+latitude+","+longitude+"&zoom=50&basemap=satellite");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -66,10 +77,15 @@ public class PhotoActivity extends AppCompatActivity {
         finish();
     }
 
-    public void displayPanorama(View view){
+    public void displayPanorama(){
 
         Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint="+latitude+","+longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
+    }
+
+    public void displaylMap(View view){
+        DialogFragment mapDialog = new MapDisplaytDialog();
+        mapDialog.show(getSupportFragmentManager(), "display map");
     }
 }
