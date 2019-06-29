@@ -4,9 +4,10 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -39,9 +40,6 @@ public class GroupThumbnailActivity extends MainGridActivity {
         GridView gridView = findViewById(R.id.grid_view);
         gridView.setAdapter(groupThumbnailAdapter);
 
-        Button button = findViewById(R.id.jump_another_activity_button);
-        button.setText("Go to All Photo Page");
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -57,6 +55,22 @@ public class GroupThumbnailActivity extends MainGridActivity {
         });
 
         initializeGroupList();
+    }
+
+    @Override
+    protected void unvisibleSpecificMenuItem(Menu menu){
+        MenuItem unvisibleItem = menu.findItem(R.id.go_group_activity);
+        unvisibleItem.setVisible(false);
+    }
+
+    @Override
+    protected void goAllPhotoActivity(){
+        jampAnotherActivity();
+    }
+
+    @Override
+    protected  void goGropThumbnailActivity(){
+
     }
 
     private void initializeGroupList(){

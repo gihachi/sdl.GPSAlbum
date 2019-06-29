@@ -18,7 +18,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -73,16 +75,51 @@ public abstract class MainGridActivity extends AppCompatActivity {
         doAdditionalInitialization();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.take_photo_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        unvisibleSpecificMenuItem(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.take_photo:
+                takePhoto();
+                return true;
+            case R.id.go_all_photo_activity:
+                goAllPhotoActivity();
+                return true;
+            case R.id.go_group_activity:
+                goGropThumbnailActivity();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    protected abstract void goAllPhotoActivity();
+    protected abstract void goGropThumbnailActivity();
+
+    protected abstract void unvisibleSpecificMenuItem(Menu menu);
+
     protected abstract void doAdditionalInitialization();
 
-    public void jampAnotherActivity(View view) {
+    public void jampAnotherActivity() {
         goToAnotherActivity();
         finish();
     }
 
     protected abstract void goToAnotherActivity();
 
-    public void takePhoto(View view){
+    public void takePhoto(){
         File photoFilePath = getTempFilePath();
 
         Uri photoURI = FileProvider.getUriForFile(MainGridActivity.this,

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/take_photo"
+        android:title="@string/take_photo" />
+    <item android:id="@+id/go_all_photo_activity"
+        android:title="@string/go_all_photo_album" />
+    <item android:id="@+id/go_group_activity"
+        android:title="@string/go_group_album" />
+</menu>

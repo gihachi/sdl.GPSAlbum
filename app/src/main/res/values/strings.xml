@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">CameraAlbum</string>
-    <string name="take_photo">take a photo</string>
+    <string name="take_photo">Take a Photo</string>
     <string name="toast_no_camera">No activities for taking photoes</string>
     <string name="temp_photo_file_name">GEO_ALBUM_TEMP.jpg</string>
     <string name="photo_file_nane_prefix">geo-album-</string>
@@ -9,5 +9,6 @@
     <string name="photo_description">photo description</string>
     <string name="remove_photo">delete photo</string>
     <string name="display_map">display map</string>
-
+    <string name="go_all_photo_album">All Photos</string>
+    <string name="go_group_album">Group Album</string>
 </resources>

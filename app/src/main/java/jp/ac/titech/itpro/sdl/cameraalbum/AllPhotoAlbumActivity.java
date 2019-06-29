@@ -4,9 +4,10 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 
 import java.io.File;
@@ -47,9 +48,6 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
         GridView gridView = findViewById(R.id.grid_view);
         gridView.setAdapter(photoGridAdapter);
 
-        Button button = findViewById(R.id.jump_another_activity_button);
-        button.setText("Go to Group Album Page");
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -67,6 +65,22 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
         });
 
         initialisePhotoList();
+    }
+
+    @Override
+    protected void unvisibleSpecificMenuItem(Menu menu){
+        MenuItem unvisibleItem = menu.findItem(R.id.go_all_photo_activity);
+        unvisibleItem.setVisible(false);
+    }
+
+    @Override
+    protected void goAllPhotoActivity(){
+
+    }
+
+    @Override
+    protected  void goGropThumbnailActivity(){
+        jampAnotherActivity();
     }
 
     private void initialisePhotoList(){

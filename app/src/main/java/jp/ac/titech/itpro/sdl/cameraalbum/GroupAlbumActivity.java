@@ -108,7 +108,9 @@ public class GroupAlbumActivity extends AppCompatActivity {
         super.onActivityResult(reqCode, resCode, data);
         switch (reqCode){
             case REQ_PHOTO_VIEW:
-                deletePhoto(data);
+                if(resCode == RESULT_OK) {
+                    deletePhoto(data);
+                }
                 break;
         }
     }
