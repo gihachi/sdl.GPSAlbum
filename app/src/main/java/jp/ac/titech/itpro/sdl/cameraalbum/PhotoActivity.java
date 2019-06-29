@@ -13,10 +13,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import jp.ac.titech.itpro.sdl.cameraalbum.dialog.DeletePhotoDialog;
 import jp.ac.titech.itpro.sdl.cameraalbum.dialog.MapDisplaytDialog;
 import jp.ac.titech.itpro.sdl.cameraalbum.util.FileUtil;
 
-public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialog.MapDialogListener {
+public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialog.MapDialogListener, DeletePhotoDialog.DeletePhotoListener {
 
     private final static String TAG = PhotoActivity.class.getSimpleName();
     private File externalPath;
@@ -47,6 +48,11 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
         showDisplay();
     }
 
+    private void showDisplay(){
+        ImageView imageView = findViewById(R.id.photo_view);
+        Picasso.with(getApplicationContext()).load(photoFile).into(imageView);
+    }
+
     @Override
     public void onArialMapSelected(DialogFragment dialog){
         displayArialMap();
@@ -57,9 +63,14 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
         displayPanorama();
     }
 
-    private void showDisplay(){
-        ImageView imageView = findViewById(R.id.photo_view);
-        Picasso.with(getApplicationContext()).load(photoFile).into(imageView);
+    @Override
+    public void onDeletePositiveClick(DialogFragment dialog){
+        deletePhoto();
+    }
+
+    public void displaylMap(View view){
+        DialogFragment mapDialog = new MapDisplaytDialog();
+        mapDialog.show(getSupportFragmentManager(), "display map");
     }
 
     public void displayArialMap(){
@@ -69,14 +80,6 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
         startActivity(intent);
     }
 
-    public void deletePhoto(View view){
-
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_DELETE_INDEX, listIndex);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
     public void displayPanorama(){
 
         Uri uri = Uri.parse("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint="+latitude+","+longitude);
@@ -84,8 +87,16 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
         startActivity(intent);
     }
 
-    public void displaylMap(View view){
-        DialogFragment mapDialog = new MapDisplaytDialog();
-        mapDialog.show(getSupportFragmentManager(), "display map");
+    public void onClickDeletePhotoButton(View view){
+        DialogFragment deletePhotoDialog = new DeletePhotoDialog();
+        deletePhotoDialog.show(getSupportFragmentManager(), "delete photo");
+    }
+
+    public void deletePhoto(){
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DELETE_INDEX, listIndex);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
