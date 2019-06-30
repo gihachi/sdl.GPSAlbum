@@ -25,7 +25,7 @@ public class GroupThumbnailActivity extends MainGridActivity {
     public static final String EXTRA_GROUP_ID = "GROUP_ID";
     public static final String EXTRA_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
 
-    private static final int REQ_GROUP_ALBUM = 10000;
+    private static final int REQ_GROUP_ALBUM = 3333;
 
 
     private List<Group> groupList;

@@ -30,8 +30,7 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
     private List<String> photoDateList;
     private PhotoGridAdapter photoGridAdapter;
 
-    private final static int REQ_PHOTO_VIEW = 9999;
-    private final static int REQ_PHOTO = 9999;
+    private final static int REQ_PHOTO_VIEW = 2222;
 
     public static final String EXTRA_DATE = "PHOTO_DATE";
     public static final String EXTRA_LATITUDE = "PHOTO_LATITUDE";

@@ -50,12 +50,13 @@ public abstract class MainGridActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
     protected final static int REQ_PERMISSIONS = 1111;
+    protected final static int REQ_PERMISSIONS_TAKING_PHOTO = 11111;
 
     private final static String TAG = AllPhotoAlbumActivity.class.getSimpleName();
     private final static int REQ_PHOTO = 1234;
     protected File externalPath;
 
-    protected static final float groupRange = 1.0f;
+    protected static final float groupRange = 100.0f;
 
     protected FusedLocationProviderClient locationClient;
 
@@ -105,6 +106,22 @@ public abstract class MainGridActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQ_PERMISSIONS_TAKING_PHOTO: {
+                if (checkPermission()) {
+
+                    takePhoto();
+                }
+                return;
+            }
+            default:
+                return;
+        }
+    }
+
     protected abstract void goAllPhotoActivity();
     protected abstract void goGropThumbnailActivity();
 
@@ -120,6 +137,12 @@ public abstract class MainGridActivity extends AppCompatActivity {
     protected abstract void goToAnotherActivity();
 
     public void takePhoto(){
+
+        if(!checkPermission()){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, REQ_PERMISSIONS_TAKING_PHOTO);
+            return;
+        }
+
         File photoFilePath = getTempFilePath();
 
         Uri photoURI = FileProvider.getUriForFile(MainGridActivity.this,
@@ -199,7 +222,6 @@ public abstract class MainGridActivity extends AppCompatActivity {
 
     protected abstract void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group);
 
-    // Todo dbを閉じる
     private void addPhoto(double latitude, double longitude, String areaName){
 
         Handler handler = new Handler();
@@ -219,6 +241,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
 
                 PhotoDatabase photoDB = Room.databaseBuilder(getApplicationContext(), PhotoDatabase.class, "photos").build();
                 photoDB.photoDao().insertPhoto(newPhotoGroupPair.first);
+                photoDB.close();
 
                 handler.post(new Runnable() {
                     @Override
