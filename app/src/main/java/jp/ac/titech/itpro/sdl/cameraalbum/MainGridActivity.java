@@ -122,19 +122,48 @@ public abstract class MainGridActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int reqCode, int resCode, Intent data){
+        super.onActivityResult(reqCode, resCode, data);
+        switch (reqCode){
+            case REQ_PHOTO:
+                if(resCode == RESULT_OK){
+                    getLocationAndAddPhotoDataToDataBase();
+                }
+                break;
+            default:
+                otherActionForActivityResult(reqCode, resCode, data);
+                break;
+        }
+    }
+
     protected abstract void goAllPhotoActivity();
+
     protected abstract void goGropThumbnailActivity();
 
     protected abstract void unvisibleSpecificMenuItem(Menu menu);
 
     protected abstract void doAdditionalInitialization();
 
+    abstract protected void otherActionForActivityResult(int reqCode, int resCode, Intent data);
+
+    protected abstract void goToAnotherActivity();
+
+    protected abstract void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group);
+
     public void jampAnotherActivity() {
         goToAnotherActivity();
         finish();
     }
 
-    protected abstract void goToAnotherActivity();
+    private boolean checkPermission(){
+        for (String permission : PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED){
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void takePhoto(){
 
@@ -165,23 +194,6 @@ public abstract class MainGridActivity extends AppCompatActivity {
         File storageDir = externalPath;
         return new File(storageDir, getString(R.string.temp_photo_file_name));
     }
-
-    @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data){
-        super.onActivityResult(reqCode, resCode, data);
-        switch (reqCode){
-            case REQ_PHOTO:
-                if(resCode == RESULT_OK){
-                    getLocationAndAddPhotoDataToDataBase();
-                }
-                break;
-            default:
-                otherActionForActivityResult(reqCode, resCode, data);
-                break;
-        }
-    }
-
-    abstract protected void otherActionForActivityResult(int reqCode, int resCode, Intent data);
 
     private void getLocationAndAddPhotoDataToDataBase(){
 
@@ -219,8 +231,6 @@ public abstract class MainGridActivity extends AppCompatActivity {
             });
         }
     }
-
-    protected abstract void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group);
 
     private void addPhoto(double latitude, double longitude, String areaName){
 
@@ -363,14 +373,4 @@ public abstract class MainGridActivity extends AppCompatActivity {
             return Pair.create(new PhotoData(date, latitude, longitude, newGroupID, true), newGroup);
         }
     }
-
-    private boolean checkPermission(){
-        for (String permission : PERMISSIONS) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED){
-                return false;
-            }
-        }
-        return true;
-    }
-
 }
