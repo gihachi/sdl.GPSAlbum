@@ -175,7 +175,7 @@ public abstract class MainGridActivity extends AppCompatActivity {
         File photoFilePath = getTempFilePath();
 
         Uri photoURI = FileProvider.getUriForFile(MainGridActivity.this,
-                "jp.ac.titech.itpro.sdl.cameraalbum.fileprovider",
+                "jp.ac.titech.itpro.sdl.gpsalbum.fileprovider",
                 photoFilePath);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
