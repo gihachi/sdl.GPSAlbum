@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jp.ac.titech.itpro.sdl.cameraalbum">
+    package="jp.ac.titech.itpro.sdl.gpsalbum">
 
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
@@ -18,22 +18,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.AllPhotoAlbumActivity">
+        <activity android:name="jp.ac.titech.itpro.sdl.gpsalbum.AllPhotoAlbumActivity">
         </activity>
-        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.PhotoActivity">
+        <activity android:name="jp.ac.titech.itpro.sdl.gpsalbum.PhotoActivity">
         </activity>
-        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupThumbnailActivity">
+        <activity android:name="jp.ac.titech.itpro.sdl.gpsalbum.GroupThumbnailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="jp.ac.titech.itpro.sdl.cameraalbum.GroupAlbumActivity">
+        <activity android:name="jp.ac.titech.itpro.sdl.gpsalbum.GroupAlbumActivity">
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="jp.ac.titech.itpro.sdl.cameraalbum.fileprovider"
+            android:authorities="jp.ac.titech.itpro.sdl.gpsalbum.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

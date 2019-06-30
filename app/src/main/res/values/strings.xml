@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CameraAlbum</string>
+    <string name="app_name">GPSAlbum</string>
     <string name="take_photo">Take a Photo</string>
     <string name="toast_no_camera">No activities for taking photoes</string>
     <string name="temp_photo_file_name">GEO_ALBUM_TEMP.jpg</string>

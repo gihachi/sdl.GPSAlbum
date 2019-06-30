@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<jp.ac.titech.itpro.sdl.cameraalbum.view.GridImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<jp.ac.titech.itpro.sdl.gpsalbum.view.GridImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -13,4 +13,4 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/description"
         android:scaleType="fitCenter" />
-</jp.ac.titech.itpro.sdl.cameraalbum.view.GridImageView>
+</jp.ac.titech.itpro.sdl.gpsalbum.view.GridImageView>
