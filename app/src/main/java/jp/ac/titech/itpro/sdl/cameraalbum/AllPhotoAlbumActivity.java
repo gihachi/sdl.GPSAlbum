@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,6 +112,7 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
 
     @Override
     protected void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group){
+        Toast.makeText(getApplicationContext(), "new photo is registered in group"+photoData.groupID, Toast.LENGTH_LONG).show();
         photoDataList.add(photoData);
         photoDateList.add(photoData.date);
         photoGridAdapter.notifyDataSetChanged();

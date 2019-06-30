@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,8 @@ public class GroupThumbnailActivity extends MainGridActivity {
 
     @Override
     protected void notifyStorePhotoDataToUIThread(PhotoData photoData, Group group){
+
+        Toast.makeText(getApplicationContext(), "new photo is registered in group"+photoData.groupID, Toast.LENGTH_LONG).show();
 
         if(group == null){
             return;
