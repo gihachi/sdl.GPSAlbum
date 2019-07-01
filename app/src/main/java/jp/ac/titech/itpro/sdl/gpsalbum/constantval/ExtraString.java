@@ -13,4 +13,7 @@ public class ExtraString {
     public static final String EXTRA_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
 
     public static final String EXTRA_DELETE_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
+
+    public static final String EXTRA_IS_THUMBNAIL_CHANGED = "IS_THUMBNAIL_CHANGED";
+    public static final String EXTRA_NEW_THUMBNAIL_NAME = "EXTRA_NEW_THUMBNAIL_NAME";
 }

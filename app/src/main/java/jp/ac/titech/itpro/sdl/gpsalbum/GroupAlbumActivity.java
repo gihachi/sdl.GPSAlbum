@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -34,6 +35,9 @@ public class GroupAlbumActivity extends AppCompatActivity {
     private List<String> photoDateList;
     private PhotoGridAdapter photoGridAdapter;
     private File externalPath;
+
+    private boolean isThumbnailChanged = false;
+    private String newThumbnailName = "";
 
     private static final int REQ_PHOTO_VIEW = 9999;
 
@@ -111,6 +115,21 @@ public class GroupAlbumActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Intent intent = new Intent();
+            intent.putExtra(ExtraString.EXTRA_IS_THUMBNAIL_CHANGED, isThumbnailChanged);
+            intent.putExtra(ExtraString.EXTRA_NEW_THUMBNAIL_NAME, newThumbnailName);
+            intent.putExtra(ExtraString.EXTRA_GROUP_LIST_ID, groupListID);
+            setResult(RESULT_CANCELED, intent);
+            finish();
+            return false;
+        }else{
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
 
     private void deletePhoto(Intent data){
         int listIndex = data.getIntExtra(ExtraString.EXTRA_DELETE_INDEX, -1);
@@ -129,18 +148,28 @@ public class GroupAlbumActivity extends AppCompatActivity {
                 photoDB.photoDao().deletePhoto(deletePhotoData);
 
                 List<PhotoData> sameGroupPhotos = photoDB.photoDao().loadPhotoDataByGroupID(deletePhotoData.groupID);
+
+                GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
+                List<Group> groupList = groupDB.groupDao().loadSpecificGroupFromID(groupID);
+                Group thisGroup = groupList.get(0);
+                if(thisGroup._id != groupID){
+                    throw new Error("group id is not equal");
+                }
+
                 if(sameGroupPhotos.size() == 0){
-                    GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
-                    List<Group> groupList = groupDB.groupDao().loadSpecificGroupFromID(groupID);
 
-                    if(groupList.get(0)._id != groupID){
-                        throw new Error("group id is not equal");
+                    groupDB.groupDao().deleteGroup(thisGroup);
+                }else{
+
+                    if(thisGroup.thumbnailName.equals(FileUtil.makePhotoFileName(deletePhotoData.date))){
+                        thisGroup.thumbnailName = FileUtil.makePhotoFileName(sameGroupPhotos.get(0).date);
+                        groupDB.groupDao().upDateGroup(thisGroup);
+                        isThumbnailChanged = true;
+                        newThumbnailName = thisGroup.thumbnailName;
                     }
-
-                    groupDB.groupDao().deleteGroup(groupList.get(0));
-                    groupDB.close();
                 }
                 photoDB.close();
+                groupDB.close();
             }
         }).start();
 

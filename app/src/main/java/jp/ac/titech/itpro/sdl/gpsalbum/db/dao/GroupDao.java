@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ public interface GroupDao {
 
     @Delete
     public void deleteGroup(Group groupData);
+
+    @Update
+    public void upDateGroup(Group groupData);
 
     @Query("SELECT * FROM  groups")
     public List<Group> loadAllGroup();

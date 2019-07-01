@@ -123,6 +123,18 @@ public class GroupThumbnailActivity extends MainGridActivity {
                     }
                     groupList.remove(listIndex);
                     groupThumbnailAdapter.notifyDataSetChanged();
+                }else if(resCode == RESULT_CANCELED){
+                    if(data != null){
+                        boolean isThumbnailChanged = data.getBooleanExtra(ExtraString.EXTRA_IS_THUMBNAIL_CHANGED, false);
+                        if(isThumbnailChanged){
+                            int groupListIndex = data.getIntExtra(ExtraString.EXTRA_GROUP_LIST_ID, -1);
+                            String newThumbnailFileName = data.getStringExtra(ExtraString.EXTRA_NEW_THUMBNAIL_NAME);
+                            Log.d(TAG, "new thumbnail " + isThumbnailChanged+","+groupListIndex+","+newThumbnailFileName);
+
+                            groupList.get(groupListIndex).thumbnailName = newThumbnailFileName;
+                            groupThumbnailAdapter.notifyDataSetChanged();
+                        }
+                    }
                 }
         }
     }

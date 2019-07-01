@@ -143,21 +143,29 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
                 photoDB.photoDao().deletePhoto(deletePhotoData);
 
                 List<PhotoData> sameGroupPhotos = photoDB.photoDao().loadPhotoDataByGroupID(deletePhotoData.groupID);
-                if(sameGroupPhotos.size() == 0){
-                    GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
-                    List<Group> groupList = groupDB.groupDao().loadSpecificGroupFromID(deletePhotoData.groupID);
 
-                    if(groupList.get(0)._id != deletePhotoData.groupID){
-                        throw new Error("group id is not equal");
-                    }
+                GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
+                List<Group> groupList = groupDB.groupDao().loadSpecificGroupFromID(deletePhotoData.groupID);
+                Group groupOfRemovedPhoto = groupList.get(0);
+                if(groupOfRemovedPhoto._id != deletePhotoData.groupID){
+                    throw new Error("group id is not equal");
+                }
+
+
+                if(sameGroupPhotos.size() == 0){
 
                     groupDB.groupDao().deleteGroup(groupList.get(0));
-                    groupDB.close();
+                }else{
+
+                    if(groupOfRemovedPhoto.thumbnailName.equals(FileUtil.makePhotoFileName(deletePhotoData.date))){
+                        groupOfRemovedPhoto.thumbnailName = FileUtil.makePhotoFileName(sameGroupPhotos.get(0).date);
+                        groupDB.groupDao().upDateGroup(groupOfRemovedPhoto);
+                    }
                 }
                 photoDB.close();
+                groupDB.close();
             }
         }).start();
-
 
         photoDataList.remove(listIndex);
         photoDateList.remove(listIndex);
