@@ -55,9 +55,8 @@ public class GroupAlbumActivity extends AppCompatActivity {
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDateList, externalPath);
 
         Intent intent = getIntent();
-        groupID = intent.getLongExtra(GroupThumbnailActivity.EXTRA_GROUP_ID, 0);
+        groupID = intent.getLongExtra(GroupThumbnailActivity.EXTRA_GROUP_ID, -1);
         groupListID = intent.getIntExtra(GroupThumbnailActivity.EXTRA_GROUP_LIST_ID, -1);
-
 
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDateList, externalPath);
         GridView gridView = findViewById(R.id.group_grid_view);
@@ -135,7 +134,12 @@ public class GroupAlbumActivity extends AppCompatActivity {
                 List<PhotoData> sameGroupPhotos = photoDB.photoDao().loadPhotoDataByGroupID(deletePhotoData.groupID);
                 if(sameGroupPhotos.size() == 0){
                     GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
-                    List<Group> groupList = groupDB.groupDao().loadAllGroup();
+                    List<Group> groupList = groupDB.groupDao().loadSpecificGroupFromID(groupID);
+
+                    if(groupList.get(0)._id != groupID){
+                        throw new Error("group id is not equal");
+                    }
+
                     groupDB.groupDao().deleteGroup(groupList.get(0));
                     groupDB.close();
                 }

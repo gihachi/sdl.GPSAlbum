@@ -147,7 +147,12 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
                 List<PhotoData> sameGroupPhotos = photoDB.photoDao().loadPhotoDataByGroupID(deletePhotoData.groupID);
                 if(sameGroupPhotos.size() == 0){
                     GroupDatabase groupDB = Room.databaseBuilder(getApplicationContext(), GroupDatabase.class, "groups").build();
-                    List<Group> groupList = groupDB.groupDao().loadAllGroup();
+                    List<Group> groupList = groupDB.groupDao().loadSpecificGroupFromID(deletePhotoData.groupID);
+
+                    if(groupList.get(0)._id != deletePhotoData.groupID){
+                        throw new Error("group id is not equal");
+                    }
+
                     groupDB.groupDao().deleteGroup(groupList.get(0));
                     groupDB.close();
                 }
