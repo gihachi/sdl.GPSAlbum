@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.ac.titech.itpro.sdl.gpsalbum.adapter.GroupThumbnailAdapter;
+import jp.ac.titech.itpro.sdl.gpsalbum.constantval.ExtraString;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.GroupDatabase;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.entity.Group;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.entity.PhotoData;
@@ -22,9 +23,6 @@ import jp.ac.titech.itpro.sdl.gpsalbum.db.entity.PhotoData;
 public class GroupThumbnailActivity extends MainGridActivity {
 
     private final static String TAG = GroupThumbnailActivity.class.getSimpleName();
-
-    public static final String EXTRA_GROUP_ID = "GROUP_ID";
-    public static final String EXTRA_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
 
     private static final int REQ_GROUP_ALBUM = 3333;
 
@@ -48,8 +46,8 @@ public class GroupThumbnailActivity extends MainGridActivity {
                 Group clickedGroup = groupList.get(position);
                 Log.d(TAG, "group id "+clickedGroup._id);
                 Intent intent = new Intent(getApplication(), GroupAlbumActivity.class);
-                intent.putExtra(EXTRA_GROUP_ID, clickedGroup._id);
-                intent.putExtra(EXTRA_GROUP_LIST_ID, position);
+                intent.putExtra(ExtraString.EXTRA_GROUP_ID, clickedGroup._id);
+                intent.putExtra(ExtraString.EXTRA_GROUP_LIST_ID, position);
 
                 startActivityForResult(intent, REQ_GROUP_ALBUM);
             }

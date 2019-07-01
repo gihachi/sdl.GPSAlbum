@@ -16,16 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.ac.titech.itpro.sdl.gpsalbum.adapter.PhotoGridAdapter;
+import jp.ac.titech.itpro.sdl.gpsalbum.constantval.ExtraString;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.GroupDatabase;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.PhotoDatabase;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.entity.Group;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.entity.PhotoData;
 import jp.ac.titech.itpro.sdl.gpsalbum.util.FileUtil;
 import jp.ac.titech.itpro.sdl.gpsalbum.util.PhotoDataUtil;
-
-import static jp.ac.titech.itpro.sdl.gpsalbum.AllPhotoAlbumActivity.EXTRA_DATE;
-import static jp.ac.titech.itpro.sdl.gpsalbum.AllPhotoAlbumActivity.EXTRA_LATITUDE;
-import static jp.ac.titech.itpro.sdl.gpsalbum.AllPhotoAlbumActivity.EXTRA_LONGITUDE;
 
 public class GroupAlbumActivity extends AppCompatActivity {
 
@@ -55,8 +52,8 @@ public class GroupAlbumActivity extends AppCompatActivity {
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDateList, externalPath);
 
         Intent intent = getIntent();
-        groupID = intent.getLongExtra(GroupThumbnailActivity.EXTRA_GROUP_ID, -1);
-        groupListID = intent.getIntExtra(GroupThumbnailActivity.EXTRA_GROUP_LIST_ID, -1);
+        groupID = intent.getLongExtra(ExtraString.EXTRA_GROUP_ID, -1);
+        groupListID = intent.getIntExtra(ExtraString.EXTRA_GROUP_LIST_ID, -1);
 
         photoGridAdapter = new PhotoGridAdapter(getApplicationContext(), photoDateList, externalPath);
         GridView gridView = findViewById(R.id.group_grid_view);
@@ -68,9 +65,10 @@ public class GroupAlbumActivity extends AppCompatActivity {
 
                 PhotoData clickedPhoto = photoDataList.get(position);
                 Intent intent = new Intent(getApplication(), PhotoActivity.class);
-                intent.putExtra(EXTRA_DATE, clickedPhoto.date);
-                intent.putExtra(EXTRA_LATITUDE, clickedPhoto.latitude);
-                intent.putExtra(EXTRA_LONGITUDE, clickedPhoto.longitude);
+                intent.putExtra(ExtraString.EXTRA_DATE, clickedPhoto.date);
+                intent.putExtra(ExtraString.EXTRA_LATITUDE, clickedPhoto.latitude);
+                intent.putExtra(ExtraString.EXTRA_LONGITUDE, clickedPhoto.longitude);
+                intent.putExtra(ExtraString.EXTRA_LIST_INDEX, position);
 
                 Log.d(TAG, "clicked photo data"+clickedPhoto.date+","+clickedPhoto.latitude+","+clickedPhoto.longitude+","+clickedPhoto.groupID+","+clickedPhoto.isOutSide);
                 startActivityForResult(intent, REQ_PHOTO_VIEW);
@@ -116,7 +114,7 @@ public class GroupAlbumActivity extends AppCompatActivity {
 
 
     private void deletePhoto(Intent data){
-        int listIndex = data.getIntExtra(PhotoActivity.EXTRA_DELETE_INDEX, -1);
+        int listIndex = data.getIntExtra(ExtraString.EXTRA_DELETE_INDEX, -1);
         if(listIndex < 0){
             return;
         }

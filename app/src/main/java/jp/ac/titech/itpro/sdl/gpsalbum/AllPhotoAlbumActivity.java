@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.ac.titech.itpro.sdl.gpsalbum.adapter.PhotoGridAdapter;
+import jp.ac.titech.itpro.sdl.gpsalbum.constantval.ExtraString;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.GroupDatabase;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.PhotoDatabase;
 import jp.ac.titech.itpro.sdl.gpsalbum.db.entity.Group;
@@ -33,10 +34,7 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
 
     private final static int REQ_PHOTO_VIEW = 2222;
 
-    public static final String EXTRA_DATE = "PHOTO_DATE";
-    public static final String EXTRA_LATITUDE = "PHOTO_LATITUDE";
-    public static final String EXTRA_LONGITUDE = "PHOTO_LONGITUDE";
-    public static final String EXTRA_LIST_INDEX = "LIST_INDEX";
+
 
     @Override
     protected void doAdditionalInitialization(){
@@ -54,10 +52,10 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
 
                 PhotoData clickedPhoto = photoDataList.get(position);
                 Intent intent = new Intent(getApplication(), PhotoActivity.class);
-                intent.putExtra(EXTRA_DATE, clickedPhoto.date);
-                intent.putExtra(EXTRA_LATITUDE, clickedPhoto.latitude);
-                intent.putExtra(EXTRA_LONGITUDE, clickedPhoto.longitude);
-                intent.putExtra(EXTRA_LIST_INDEX, position);
+                intent.putExtra(ExtraString.EXTRA_DATE, clickedPhoto.date);
+                intent.putExtra(ExtraString.EXTRA_LATITUDE, clickedPhoto.latitude);
+                intent.putExtra(ExtraString.EXTRA_LONGITUDE, clickedPhoto.longitude);
+                intent.putExtra(ExtraString.EXTRA_LIST_INDEX, position);
 
                 Log.d(TAG, "clicked photo data"+clickedPhoto.date+","+clickedPhoto.latitude+","+clickedPhoto.longitude+","+clickedPhoto.groupID+","+clickedPhoto.isOutSide);
                 startActivityForResult(intent, REQ_PHOTO_VIEW);
@@ -130,7 +128,7 @@ public class AllPhotoAlbumActivity extends MainGridActivity {
     }
 
     void deletePhoto(Intent intent){
-        int listIndex = intent.getIntExtra(PhotoActivity.EXTRA_DELETE_INDEX, -1);
+        int listIndex = intent.getIntExtra(ExtraString.EXTRA_DELETE_INDEX, -1);
         if(listIndex < 0){
             return;
         }

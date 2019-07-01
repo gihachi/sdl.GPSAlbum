@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import jp.ac.titech.itpro.sdl.gpsalbum.constantval.ExtraString;
 import jp.ac.titech.itpro.sdl.gpsalbum.dialog.DeletePhotoDialog;
 import jp.ac.titech.itpro.sdl.gpsalbum.dialog.MapDisplaytDialog;
 import jp.ac.titech.itpro.sdl.gpsalbum.util.FileUtil;
@@ -27,8 +28,6 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
     private File photoFile;
     private int listIndex;
 
-    public static final String EXTRA_DELETE_INDEX = "DELETE_INDEX";
-
     @Override
     protected void onCreate(Bundle saveInstanceState){
 
@@ -37,11 +36,14 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
         setContentView(R.layout.activity_photo);
 
         Intent intent = getIntent();
-        date = intent.getStringExtra(AllPhotoAlbumActivity.EXTRA_DATE);
-        latitude = intent.getDoubleExtra(AllPhotoAlbumActivity.EXTRA_LATITUDE, 0.0);
-        longitude = intent.getDoubleExtra(AllPhotoAlbumActivity.EXTRA_LONGITUDE,0.0);
+        date = intent.getStringExtra(ExtraString.EXTRA_DATE);
+        latitude = intent.getDoubleExtra(ExtraString.EXTRA_LATITUDE, 0.0);
+        longitude = intent.getDoubleExtra(ExtraString.EXTRA_LONGITUDE,0.0);
 
-        listIndex = intent.getIntExtra(AllPhotoAlbumActivity.EXTRA_LIST_INDEX, 0);
+        listIndex = intent.getIntExtra(ExtraString.EXTRA_LIST_INDEX, -1);
+        if(listIndex < 0){
+            throw new Error("you have to set list index");
+        }
 
         photoFile = new File(externalPath, FileUtil.makePhotoFileName(date));
 
@@ -95,7 +97,7 @@ public class PhotoActivity extends AppCompatActivity implements MapDisplaytDialo
     public void deletePhoto(){
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_DELETE_INDEX, listIndex);
+        intent.putExtra(ExtraString.EXTRA_DELETE_INDEX, listIndex);
         setResult(RESULT_OK, intent);
         finish();
     }
