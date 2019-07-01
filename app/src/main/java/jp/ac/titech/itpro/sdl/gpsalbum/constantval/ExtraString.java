@@ -11,4 +11,6 @@ public class ExtraString {
 
     public static final String EXTRA_GROUP_ID = "GROUP_ID";
     public static final String EXTRA_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
+
+    public static final String EXTRA_DELETE_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
 }

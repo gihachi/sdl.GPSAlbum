@@ -117,7 +117,7 @@ public class GroupThumbnailActivity extends MainGridActivity {
         switch (reqCode){
             case REQ_GROUP_ALBUM:
                 if(resCode == RESULT_OK){
-                    int listIndex = data.getIntExtra(GroupAlbumActivity.EXTRA_DELETE_GROUP_LIST_ID, -1);
+                    int listIndex = data.getIntExtra(ExtraString.EXTRA_DELETE_GROUP_LIST_ID, -1);
                     if(listIndex < 0){
                         return;
                     }

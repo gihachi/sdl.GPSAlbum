@@ -35,7 +35,6 @@ public class GroupAlbumActivity extends AppCompatActivity {
     private PhotoGridAdapter photoGridAdapter;
     private File externalPath;
 
-    public static final String EXTRA_DELETE_GROUP_LIST_ID = "DELETE_GROUP_LIST_ID";
     private static final int REQ_PHOTO_VIEW = 9999;
 
     @Override
@@ -148,7 +147,7 @@ public class GroupAlbumActivity extends AppCompatActivity {
 
         if (photoDataList.size() == 1){
             Intent intent = new Intent();
-            intent.putExtra(EXTRA_DELETE_GROUP_LIST_ID, groupListID);
+            intent.putExtra(ExtraString.EXTRA_DELETE_GROUP_LIST_ID, groupListID);
             setResult(RESULT_OK, intent);
             finish();
         }else{
